@@ -13,12 +13,12 @@
 pip install -r requirements.txt
 ```
 
-### НАСТРОЙКА 
+## НАСТРОЙКА 
 .ENV (Переменные Окружения)
  - ACCESS_TOKEN - Токен доступа https://vk.com/dev/implicit_flow_user
  - WALL_ID - Номер стены, для публикаций(должен быть доступ) https://regvk.com/id/
 
-### ЗАПУСК
+## ЗАПУСК
 
 - Запустите скрипт командой: 
 ```
