@@ -102,7 +102,7 @@ def vk_wallPost(access_token, wall_id, owner_id, post_id, text=None):
 if __name__ == '__main__':
 
     load_dotenv()
-    wall_id = 218219120
+    wall_id = int(os.environ['WALL_ID'])
     access_token = os.environ['ACCESS_TOKEN']
 
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
