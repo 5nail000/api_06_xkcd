@@ -107,9 +107,9 @@ if __name__ == '__main__':
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
     download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
-    vk_UploadServer = get_wall_upload_server_vk(access_token, wall_id)
-    server, photo, hash = upload_image_vk(vk_UploadServer, f'{folder}/{xkcd_filename}')
+    vk_upload_server = get_wall_upload_server_vk(access_token, wall_id)
+    server, photo, hash = upload_image_vk(vk_upload_server, f'{folder}/{xkcd_filename}')
     owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, hash)
-    wallPost = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
+    wall_post = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     os.remove(f'{folder}/{xkcd_filename}')
