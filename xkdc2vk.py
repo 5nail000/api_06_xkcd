@@ -103,10 +103,11 @@ if __name__ == '__main__':
     wall_id = int(os.environ['VK_WALL_ID'])
     access_token = os.environ['VK_ACCESS_TOKEN']
     folder = 'files'
+    comics_total = 2723
 
     os.makedirs(folder, exist_ok=True)
 
-    xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
+    xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, comics_total))
     download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
     try:
