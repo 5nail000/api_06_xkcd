@@ -21,7 +21,6 @@ def download_file(link, file_name, params=None):
     response = send_request(link, params=params)
     with open(Path.cwd()/file_name, 'wb') as file:
         file.write(response.content)
-        return True
 
 
 def get_xkcd(num):
