@@ -100,8 +100,8 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
 if __name__ == '__main__':
 
     load_dotenv()
-    wall_id = int(os.environ['WALL_ID'])
-    access_token = os.environ['ACCESS_TOKEN']
+    wall_id = int(os.environ['VK_WALL_ID'])
+    access_token = os.environ['VK_ACCESS_TOKEN']
     folder = 'files'
 
     os.makedirs(folder, exist_ok=True)
