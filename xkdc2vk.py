@@ -50,9 +50,11 @@ def get_wall_upload_server_vk(access_token, wall_id):
 
 
 def upload_image_vk(upload_url, img_file):
-    files = {"photo": open(img_file, "rb")}
 
-    upload_response = send_request(upload_url, files=files)
+    with open(img_file, "rb") as file:
+        files = {"photo": file}
+        upload_response = send_request(upload_url, files=files)
+
     decoded_response = upload_response.json()
 
     return decoded_response['server'], decoded_response['photo'], decoded_response['hash']
