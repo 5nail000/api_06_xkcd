@@ -58,7 +58,7 @@ def upload_image_vk(upload_url, img_file):
     return decoded_response['server'], decoded_response['photo'], decoded_response['hash']
 
 
-def save_wall_photo_vk(access_token, wall_id, server, photo, hash):
+def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
     method = 'photos.saveWallPhoto'
     url = f'https://api.vk.com/method/{method}'
     params = {
@@ -67,7 +67,7 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, hash):
         'group_id': wall_id,
         'server': server,
         'photo': photo,
-        'hash': hash
+        'hash': upload_hash
     }
 
     saveWall_response = send_request(url, params=params)
@@ -108,8 +108,8 @@ if __name__ == '__main__':
     download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
     vk_wall_upload_url = get_wall_upload_server_vk(access_token, wall_id)
-    server, photo, hash = upload_image_vk(vk_wall_upload_url, f'{folder}/{xkcd_filename}')
-    owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, hash)
+    server, photo, upload_hash = upload_image_vk(vk_wall_upload_url, f'{folder}/{xkcd_filename}')
+    owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash)
     wall_post = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     os.remove(f'{folder}/{xkcd_filename}')
