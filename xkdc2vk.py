@@ -28,11 +28,11 @@ def get_xkcd(num):
 
     xkcd_response = send_request(f'https://xkcd.com/{num}/info.0.json')
     decoded_response = xkcd_response.json()
-    xkcd_img = decoded_response['img']
+    xkcd_img_url = decoded_response['img']
+    xkcd_img_name = os.path.basename(urlparse(xkcd_img_url).path)
     xkcd_alt = decoded_response['alt']
-    xkcd_img_name = os.path.basename(urlparse(xkcd_img).path)
 
-    return xkcd_img_name, xkcd_img, xkcd_alt
+    return xkcd_img_name, xkcd_img_url, xkcd_alt
 
 
 def get_wall_upload_server_vk(access_token, wall_id):
@@ -44,9 +44,9 @@ def get_wall_upload_server_vk(access_token, wall_id):
         'group_id': wall_id
     }
 
-    upload_Server = send_request(url, params=params)
+    response = send_request(url, params=params)
 
-    return upload_Server.json()['response']['upload_url']
+    return response.json()['response']['upload_url']
 
 
 def upload_image_vk(upload_url, img_file):
@@ -107,8 +107,8 @@ if __name__ == '__main__':
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
     download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
-    vk_upload_server = get_wall_upload_server_vk(access_token, wall_id)
-    server, photo, hash = upload_image_vk(vk_upload_server, f'{folder}/{xkcd_filename}')
+    vk_wall_upload_url = get_wall_upload_server_vk(access_token, wall_id)
+    server, photo, hash = upload_image_vk(vk_wall_upload_url, f'{folder}/{xkcd_filename}')
     owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, hash)
     wall_post = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
