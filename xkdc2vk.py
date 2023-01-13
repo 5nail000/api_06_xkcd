@@ -27,8 +27,9 @@ def download_file(link, file_name, params=None):
 def get_xkcd(num):
 
     xkcd_response = send_request(f'https://xkcd.com/{num}/info.0.json')
-    xkcd_img = xkcd_response.json()['img']
-    xkcd_alt = xkcd_response.json()['alt']
+    decoded_response = xkcd_response.json()
+    xkcd_img = decoded_response['img']
+    xkcd_alt = decoded_response['alt']
     xkcd_img_name = os.path.basename(urlparse(xkcd_img).path)
 
     return xkcd_img_name, xkcd_img, xkcd_alt
@@ -52,12 +53,9 @@ def vk_uploadImage(upload_url, img_file):
     files = {"photo": open(img_file, "rb")}
 
     upload_response = send_request(upload_url, files=files)
+    decoded_response = upload_response.json()
 
-    server = upload_response.json()['server']
-    photo = upload_response.json()['photo']
-    hash = upload_response.json()['hash']
-
-    return server, photo, hash
+    return decoded_response['server'], decoded_response['photo'], decoded_response['hash']
 
 
 def vk_saveWallPhoto(access_token, wall_id, server, photo, hash):
