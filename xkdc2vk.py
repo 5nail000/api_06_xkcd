@@ -16,11 +16,10 @@ def send_request(url, params=None, files=None):
     return response
 
 
-def download_file(link, file_name, folder='Files', params=None):
+def download_file(link, file_name, params=None):
 
     response = send_request(link, params=params)
-    os.makedirs(folder, exist_ok=True)
-    with open(Path.cwd()/folder/file_name, 'wb') as file:
+    with open(Path.cwd()/file_name, 'wb') as file:
         file.write(response.content)
         return True
 
@@ -103,13 +102,16 @@ if __name__ == '__main__':
     load_dotenv()
     wall_id = int(os.environ['WALL_ID'])
     access_token = os.environ['ACCESS_TOKEN']
+    folder = 'files'
+
+    os.makedirs(folder, exist_ok=True)
 
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
-    download_file(xkcd_url, xkcd_filename, folder='files')
+    download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
     vk_UploadServer = vk_getWallUploadServer(access_token, wall_id)
-    server, photo, hash = vk_uploadImage(vk_UploadServer, f'files/{xkcd_filename}')
+    server, photo, hash = vk_uploadImage(vk_UploadServer, f'{folder}/{xkcd_filename}')
     owner_id, post_id = vk_saveWallPhoto(access_token, wall_id, server, photo, hash)
     wallPost = vk_wallPost(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
-    os.remove(f'files/{xkcd_filename}')
+    os.remove(f'{folder}/{xkcd_filename}')
