@@ -35,7 +35,7 @@ def get_xkcd(num):
     return xkcd_img_name, xkcd_img, xkcd_alt
 
 
-def vk_getWallUploadServer(access_token, wall_id):
+def getWallUploadServer_vk(access_token, wall_id):
     method = 'photos.getWallUploadServer'
     url = f'https://api.vk.com/method/{method}'
     params = {
@@ -49,7 +49,7 @@ def vk_getWallUploadServer(access_token, wall_id):
     return upload_Server.json()['response']['upload_url']
 
 
-def vk_uploadImage(upload_url, img_file):
+def uploadImage_vk(upload_url, img_file):
     files = {"photo": open(img_file, "rb")}
 
     upload_response = send_request(upload_url, files=files)
@@ -58,7 +58,7 @@ def vk_uploadImage(upload_url, img_file):
     return decoded_response['server'], decoded_response['photo'], decoded_response['hash']
 
 
-def vk_saveWallPhoto(access_token, wall_id, server, photo, hash):
+def saveWallPhoto_vk(access_token, wall_id, server, photo, hash):
     method = 'photos.saveWallPhoto'
     url = f'https://api.vk.com/method/{method}'
     params = {
@@ -78,7 +78,7 @@ def vk_saveWallPhoto(access_token, wall_id, server, photo, hash):
     return owner_id, post_id
 
 
-def vk_wallPost(access_token, wall_id, owner_id, post_id, text=None):
+def wallPost_vk(access_token, wall_id, owner_id, post_id, text=None):
     method = 'wall.post'
     url = f'https://api.vk.com/method/{method}'
     params = {
@@ -107,9 +107,9 @@ if __name__ == '__main__':
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, 2723))
     download_file(xkcd_url, f'{folder}/{xkcd_filename}')
 
-    vk_UploadServer = vk_getWallUploadServer(access_token, wall_id)
-    server, photo, hash = vk_uploadImage(vk_UploadServer, f'{folder}/{xkcd_filename}')
-    owner_id, post_id = vk_saveWallPhoto(access_token, wall_id, server, photo, hash)
-    wallPost = vk_wallPost(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
+    vk_UploadServer = getWallUploadServer_vk(access_token, wall_id)
+    server, photo, hash = uploadImage_vk(vk_UploadServer, f'{folder}/{xkcd_filename}')
+    owner_id, post_id = saveWallPhoto_vk(access_token, wall_id, server, photo, hash)
+    wallPost = wallPost_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     os.remove(f'{folder}/{xkcd_filename}')
