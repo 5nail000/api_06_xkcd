@@ -7,12 +7,11 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 
-def send_request(url, params=None, post=None, files=None):
-    if post:
-        response = requests.post(url, params=params, files=files)
+def send_request(url, params=None, files=None):
+    if files:
+        response = requests.post(url, params=params, files=files)    
     else:
         response = requests.get(url, params=params)
-
     response.raise_for_status()
     return response
 
@@ -45,7 +44,7 @@ def vk_getWallUploadServer(access_token, wall_id):
         'group_id': wall_id
     }
 
-    upload_Server = send_request(url, params=params, post=True)
+    upload_Server = send_request(url, params=params)
 
     return upload_Server.json()['response']['upload_url']
 
@@ -53,7 +52,7 @@ def vk_getWallUploadServer(access_token, wall_id):
 def vk_uploadImage(upload_url, img_file):
     files = {"photo": open(img_file, "rb")}
 
-    upload_response = send_request(upload_url, files=files, post=True)
+    upload_response = send_request(upload_url, files=files)
 
     server = upload_response.json()['server']
     photo = upload_response.json()['photo']
@@ -74,7 +73,7 @@ def vk_saveWallPhoto(access_token, wall_id, server, photo, hash):
         'hash': hash
     }
 
-    saveWall_response = send_request(url, params=params, post=True)
+    saveWall_response = send_request(url, params=params)
 
     owner_id = saveWall_response.json()['response'][0]['owner_id']
     post_id = saveWall_response.json()['response'][0]['id']
@@ -94,7 +93,7 @@ def vk_wallPost(access_token, wall_id, owner_id, post_id, text=None):
         'message': text
     }
 
-    wallPost = send_request(url, params=params, post=True)
+    wallPost = send_request(url, params=params)
 
     return wallPost.json()
 
