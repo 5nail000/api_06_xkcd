@@ -20,8 +20,8 @@ def get_xkcd(num):
 
     xkcd_response = requests.get(f'https://xkcd.com/{num}/info.0.json')
     xkcd_response.raise_for_status()
-
     decoded_response = xkcd_response.json()
+
     xkcd_img_url = decoded_response['img']
     xkcd_img_name = os.path.basename(urlparse(xkcd_img_url).path)
     xkcd_alt = decoded_response['alt']
