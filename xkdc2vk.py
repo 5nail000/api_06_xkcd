@@ -72,6 +72,7 @@ def upload_image_vk(upload_url, img_file):
         upload_response.raise_for_status()
 
     decoded_response = upload_response.json()
+    check_error_response_vk('upload_image_vk', decoded_response)
 
     return decoded_response['server'], decoded_response['photo'], decoded_response['hash']
 
