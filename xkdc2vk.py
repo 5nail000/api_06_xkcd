@@ -34,7 +34,7 @@ def get_xkcd(num):
 def check_error_response_vk(point_name, decoded_response):
     pp = pprint.PrettyPrinter(indent=3)
     if 'error' in decoded_response:
-        log = (f'Error in point: {point_name}\n')
+        log = (f'Error at point: {point_name}\n')
         log += (f'Data: {pp.pformat(decoded_response)}')
 
         logging.basicConfig(level=logging.ERROR,
