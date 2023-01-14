@@ -107,13 +107,14 @@ if __name__ == '__main__':
     os.makedirs(folder, exist_ok=True)
 
     xkcd_filename, xkcd_url, xkcd_alt = get_xkcd(random.randint(1, comics_total))
-    download_file(xkcd_url, f'{folder}/{xkcd_filename}')
+    temp_file = Path.cwd()/folder/xkcd_filename
+    download_file(xkcd_url, temp_file)
 
     try:
         vk_wall_upload_url = get_wall_upload_server_vk(access_token, wall_id)
-        server, photo, upload_hash = upload_image_vk(vk_wall_upload_url, f'{folder}/{xkcd_filename}')
+        server, photo, upload_hash = upload_image_vk(vk_wall_upload_url, temp_file)
         owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash)
         wall_post_request = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     finally:
-        os.remove(f'{folder}/{xkcd_filename}')
+        os.remove(temp_file)
