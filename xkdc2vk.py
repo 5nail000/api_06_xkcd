@@ -68,11 +68,12 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
         'hash': upload_hash
     }
 
-    saveWall_response = requests.post(url, params=params)
-    saveWall_response.raise_for_status()
+    save_wall_response = requests.post(url, params=params)
+    save_wall_response.raise_for_status()
+    save_wall_decoded = save_wall_response.json()['response'][0]
 
-    owner_id = saveWall_response.json()['response'][0]['owner_id']
-    post_id = saveWall_response.json()['response'][0]['id']
+    owner_id = save_wall_decoded['owner_id']
+    post_id = save_wall_decoded['id']
 
     return owner_id, post_id
 
