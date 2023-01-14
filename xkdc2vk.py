@@ -1,5 +1,7 @@
 import os
 import random
+import pprint
+import logging
 import requests
 
 from pathlib import Path
@@ -29,6 +31,22 @@ def get_xkcd(num):
     return xkcd_img_name, xkcd_img_url, xkcd_alt
 
 
+def check_error_response_vk(point_name, decoded_response):
+    pp = pprint.PrettyPrinter(indent=3)
+    if 'error' in decoded_response:
+        log = (f'Error in point: {point_name}\n')
+        log += (f'Data: {pp.pformat(decoded_response)}')
+
+        logging.basicConfig(level=logging.ERROR,
+                            filename="error.log",
+                            filemode="w",
+                            format="%(asctime)s - %(message)s",
+                            datefmt='%Y.%m.%d  %H:%M:%S'
+                            )
+        logging.error(log)
+        quit()
+
+
 def get_wall_upload_server_vk(access_token, wall_id):
     method = 'photos.getWallUploadServer'
     url = f'https://api.vk.com/method/{method}'
@@ -40,8 +58,10 @@ def get_wall_upload_server_vk(access_token, wall_id):
 
     response = requests.get(url, params=params)
     response.raise_for_status()
+    decoded_response = response.json()
+    check_error_response_vk('get_wall_upload_server_vk', decoded_response)
 
-    return response.json()['response']['upload_url']
+    return decoded_response['response']['upload_url']
 
 
 def upload_image_vk(upload_url, img_file):
@@ -69,11 +89,11 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
     }
 
     save_wall_response = requests.post(url, params=params)
-    save_wall_response.raise_for_status()
-    save_wall_decoded = save_wall_response.json()['response'][0]
+    save_wall_decoded = save_wall_response.json()
+    check_error_response_vk('save_wall_photo_vk', save_wall_decoded)
 
-    owner_id = save_wall_decoded['owner_id']
-    post_id = save_wall_decoded['id']
+    owner_id = save_wall_decoded['response'][0]['owner_id']
+    post_id = save_wall_decoded['response'][0]['id']
 
     return owner_id, post_id
 
@@ -91,7 +111,9 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
     }
 
     wall_post_request = requests.post(url, params=params)
-    wall_post_request.raise_for_status()
+    wall_post_decoded = wall_post_request.json()
+
+    check_error_response_vk('post_wall_vk', wall_post_decoded)
 
     return wall_post_request.json()
 
@@ -101,6 +123,7 @@ if __name__ == '__main__':
     load_dotenv()
     wall_id = int(os.environ['VK_WALL_ID'])
     access_token = os.environ['VK_ACCESS_TOKEN']
+
     folder = 'files'
     comics_total = 2723
 
