@@ -7,25 +7,20 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 
-def send_request(url, params=None, files=None):
-    if files:
-        response = requests.post(url, params=params, files=files)    
-    else:
-        response = requests.get(url, params=params)
-    response.raise_for_status()
-    return response
-
-
 def download_file(link, file_name, params=None):
 
-    response = send_request(link, params=params)
+    response = requests.get(link, params=params)
+    response.raise_for_status()
+
     with open(Path.cwd()/file_name, 'wb') as file:
         file.write(response.content)
 
 
 def get_xkcd(num):
 
-    xkcd_response = send_request(f'https://xkcd.com/{num}/info.0.json')
+    xkcd_response = requests.get(f'https://xkcd.com/{num}/info.0.json')
+    xkcd_response.raise_for_status()
+
     decoded_response = xkcd_response.json()
     xkcd_img_url = decoded_response['img']
     xkcd_img_name = os.path.basename(urlparse(xkcd_img_url).path)
@@ -43,7 +38,8 @@ def get_wall_upload_server_vk(access_token, wall_id):
         'group_id': wall_id
     }
 
-    response = send_request(url, params=params)
+    response = requests.get(url, params=params)
+    response.raise_for_status()
 
     return response.json()['response']['upload_url']
 
@@ -52,7 +48,8 @@ def upload_image_vk(upload_url, img_file):
 
     with open(img_file, "rb") as file:
         files = {"photo": file}
-        upload_response = send_request(upload_url, files=files)
+        upload_response = requests.post(upload_url, files=files)
+        upload_response.raise_for_status()
 
     decoded_response = upload_response.json()
 
@@ -71,7 +68,8 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
         'hash': upload_hash
     }
 
-    saveWall_response = send_request(url, params=params)
+    saveWall_response = requests.post(url, params=params)
+    saveWall_response.raise_for_status()
 
     owner_id = saveWall_response.json()['response'][0]['owner_id']
     post_id = saveWall_response.json()['response'][0]['id']
@@ -91,7 +89,8 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
         'message': text
     }
 
-    wallPost = send_request(url, params=params)
+    wallPost = requests.post(url, params=params)
+    wallPost.raise_for_status()
 
     return wallPost.json()
 
