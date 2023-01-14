@@ -90,10 +90,10 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
         'message': text
     }
 
-    wallPost = requests.post(url, params=params)
-    wallPost.raise_for_status()
+    wall_post = requests.post(url, params=params)
+    wall_post.raise_for_status()
 
-    return wallPost.json()
+    return wall_post.json()
 
 
 if __name__ == '__main__':
