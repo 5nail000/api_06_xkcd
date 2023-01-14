@@ -90,10 +90,10 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
         'message': text
     }
 
-    wall_post = requests.post(url, params=params)
-    wall_post.raise_for_status()
+    wall_post_request = requests.post(url, params=params)
+    wall_post_request.raise_for_status()
 
-    return wall_post.json()
+    return wall_post_request.json()
 
 
 if __name__ == '__main__':
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         vk_wall_upload_url = get_wall_upload_server_vk(access_token, wall_id)
         server, photo, upload_hash = upload_image_vk(vk_wall_upload_url, f'{folder}/{xkcd_filename}')
         owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash)
-        wall_post = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
+        wall_post_request = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     finally:
         os.remove(f'{folder}/{xkcd_filename}')
