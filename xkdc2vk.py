@@ -69,8 +69,8 @@ def upload_image_vk(upload_url, img_file):
     with open(img_file, "rb") as file:
         files = {"photo": file}
         upload_response = requests.post(upload_url, files=files)
-        upload_response.raise_for_status()
 
+    upload_response.raise_for_status()
     decoded_response = upload_response.json()
     check_error_response_vk('upload_image_vk', decoded_response)
 
