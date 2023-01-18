@@ -90,11 +90,11 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
     }
 
     save_wall_response = requests.post(url, params=params)
-    save_wall_decoded = save_wall_response.json()
-    check_error_response_vk('save_wall_photo_vk', save_wall_decoded)
+    decoded_response = save_wall_response.json()
+    check_error_response_vk('save_wall_photo_vk', decoded_response)
 
-    owner_id = save_wall_decoded['response'][0]['owner_id']
-    post_id = save_wall_decoded['response'][0]['id']
+    owner_id = decoded_response['response'][0]['owner_id']
+    post_id = decoded_response['response'][0]['id']
 
     return owner_id, post_id
 
@@ -111,10 +111,10 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
         'message': text
     }
 
-    wall_post_request = requests.post(url, params=params)
-    wall_post_decoded = wall_post_request.json()
+    wall_post_response = requests.post(url, params=params)
+    decoded_response = wall_post_response.json()
 
-    check_error_response_vk('post_wall_vk', wall_post_decoded)
+    check_error_response_vk('post_wall_vk', decoded_response)
 
     return wall_post_request.json()
 
