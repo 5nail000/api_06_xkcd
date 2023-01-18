@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 
+class VkResponseError(Exception):
+    pass
+
+
 def download_file(link, file_name, params=None):
 
     response = requests.get(link, params=params)
@@ -34,7 +38,7 @@ def get_xkcd(num):
 def check_error_response_vk(point_name, decoded_response):
     pp = pprint.PrettyPrinter(indent=3)
     if 'error' in decoded_response:
-        log = (f'Error at point: {point_name}\n')
+        log = (f'\nError at point: {point_name}\n')
         log += (f'Data: {pp.pformat(decoded_response)}')
 
         logging.basicConfig(level=logging.ERROR,
@@ -44,7 +48,7 @@ def check_error_response_vk(point_name, decoded_response):
                             datefmt='%Y.%m.%d  %H:%M:%S'
                             )
         logging.error(log)
-        quit()
+        raise VkResponseError(log)
 
 
 def get_wall_upload_server_vk(access_token, wall_id):
@@ -116,7 +120,7 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
 
     check_error_response_vk('post_wall_vk', decoded_response)
 
-    return wall_post_request.json()
+    return decoded_response
 
 
 if __name__ == '__main__':
@@ -138,7 +142,7 @@ if __name__ == '__main__':
         vk_wall_upload_url = get_wall_upload_server_vk(access_token, wall_id)
         server, photo, upload_hash = upload_image_vk(vk_wall_upload_url, temp_file)
         owner_id, post_id = save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash)
-        wall_post_request = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
+        wall_post_response = post_wall_vk(access_token, wall_id, owner_id, post_id, text=xkcd_alt)
 
     finally:
         os.remove(temp_file)
