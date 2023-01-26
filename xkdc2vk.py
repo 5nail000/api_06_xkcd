@@ -94,6 +94,7 @@ def save_wall_photo_vk(access_token, wall_id, server, photo, upload_hash):
     }
 
     save_wall_response = requests.post(url, params=params)
+    save_wall_response.raise_for_status()
     decoded_response = save_wall_response.json()
     check_error_response_vk('save_wall_photo_vk', decoded_response)
 
@@ -116,8 +117,8 @@ def post_wall_vk(access_token, wall_id, owner_id, post_id, text=None):
     }
 
     wall_post_response = requests.post(url, params=params)
+    wall_post_response.raise_for_status()
     decoded_response = wall_post_response.json()
-
     check_error_response_vk('post_wall_vk', decoded_response)
 
     return decoded_response
